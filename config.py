@@ -31,5 +31,13 @@ class Settings(BaseSettings):
             return v.replace('postgresql://', 'postgresql+asyncpg://', 1)
         return v
 
+    @field_validator('webhook_host')
+    @classmethod
+    def ensure_https(cls, v: str) -> str:
+        """Ensure webhook_host has https:// prefix"""
+        if not v.startswith('http://') and not v.startswith('https://'):
+            return f'https://{v}'
+        return v
+
 
 settings = Settings()
