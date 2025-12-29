@@ -5,9 +5,28 @@ from database.repository import UserRepository, BookingRepository, MessageReposi
 from database.models import BookingStatus, MessageType
 from services.scheduler import schedule_reminder, schedule_feedback_request, cancel_scheduled_tasks
 from aiogram import Bot
+from aiogram.types import Update
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+async def handle_telegram_webhook(request: web.Request) -> web.Response:
+    """Handle webhook from Telegram"""
+    bot = request.app['bot']
+    dp = request.app['dp']
+    
+    try:
+        data = await request.json()
+        logger.info(f"Received Telegram update: {data}")
+        
+        update = Update.model_validate(data, context={"bot": bot})
+        await dp.feed_update(bot, update)
+        
+        return web.Response(status=200)
+    except Exception as e:
+        logger.error(f"Error processing Telegram webhook: {e}", exc_info=True)
+        return web.Response(status=500)
 
 
 async def send_reminder(booking_id: int, bot: Bot):

@@ -6,7 +6,7 @@ from aiohttp import web
 from config import settings
 from database import init_db
 from handlers.bot_handlers import router as bot_router
-from handlers.webhook_handlers import handle_webhook
+from handlers.webhook_handlers import handle_webhook, handle_telegram_webhook
 from services.scheduler import start_scheduler, stop_scheduler
 
 # Configure logging
@@ -29,11 +29,11 @@ async def on_startup(app: web.Application):
     start_scheduler()
     logger.info("Scheduler started")
     
-    # Set webhook
+    # Set webhook for Telegram
     bot = app['bot']
-    webhook_url = f"{settings.webhook_host}{settings.webhook_path}"
-    await bot.set_webhook(webhook_url, drop_pending_updates=True)
-    logger.info(f"Webhook set to: {webhook_url}")
+    telegram_webhook_url = f"{settings.webhook_host}/webhook/telegram"
+    await bot.set_webhook(telegram_webhook_url, drop_pending_updates=True)
+    logger.info(f"Telegram webhook set to: {telegram_webhook_url}")
 
 
 async def on_shutdown(app: web.Application):
@@ -66,8 +66,9 @@ def create_app() -> web.Application:
     app['bot'] = bot
     app['dp'] = dp
     
-    # Register webhook endpoint
-    app.router.add_post(settings.webhook_path, handle_webhook)
+    # Register webhook endpoints
+    app.router.add_post(settings.webhook_path, handle_webhook)  # Bukza webhook
+    app.router.add_post('/webhook/telegram', handle_telegram_webhook)  # Telegram webhook
     
     # Register startup/shutdown handlers
     app.on_startup.append(on_startup)
