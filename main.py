@@ -29,12 +29,11 @@ async def on_startup(app: web.Application):
     start_scheduler()
     logger.info("Scheduler started")
     
-    # Start bot polling in background
+    # Set webhook
     bot = app['bot']
-    dp = app['dp']
-    
-    asyncio.create_task(dp.start_polling(bot))
-    logger.info("Bot polling started")
+    webhook_url = f"{settings.webhook_host}{settings.webhook_path}"
+    await bot.set_webhook(webhook_url, drop_pending_updates=True)
+    logger.info(f"Webhook set to: {webhook_url}")
 
 
 async def on_shutdown(app: web.Application):
@@ -44,8 +43,9 @@ async def on_shutdown(app: web.Application):
     # Stop scheduler
     stop_scheduler()
     
-    # Close bot session
+    # Delete webhook and close bot session
     bot = app['bot']
+    await bot.delete_webhook(drop_pending_updates=True)
     await bot.session.close()
     
     logger.info("Shutdown complete")
