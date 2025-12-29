@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 
 
 class Settings(BaseSettings):
@@ -21,6 +22,14 @@ class Settings(BaseSettings):
     # Review Links
     link_2gis: str
     link_yandex_maps: str
+    
+    @field_validator('database_url')
+    @classmethod
+    def convert_database_url(cls, v: str) -> str:
+        """Convert postgresql:// to postgresql+asyncpg:// for async support"""
+        if v.startswith('postgresql://'):
+            return v.replace('postgresql://', 'postgresql+asyncpg://', 1)
+        return v
 
 
 settings = Settings()
