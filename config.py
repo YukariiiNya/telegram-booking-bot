@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
+from typing import Optional
 
 
 class Settings(BaseSettings):
@@ -22,6 +23,18 @@ class Settings(BaseSettings):
     # Review Links
     link_2gis: str
     link_yandex_maps: str
+    
+    # Support (optional)
+    support_channel_id: Optional[str] = None
+    
+    # Company Info (optional)
+    company_address: Optional[str] = "г. Москва, ул. Примерная, д. 1"
+    company_phone: Optional[str] = "+7 (999) 123-45-67"
+    company_email: Optional[str] = "info@example.com"
+    company_website: Optional[str] = "example.com"
+    company_instagram: Optional[str] = "@example"
+    company_hours: Optional[str] = "Пн-Вс: 10:00 - 22:00"
+    bukza_booking_url: Optional[str] = None
     
     @field_validator('database_url')
     @classmethod

@@ -56,6 +56,15 @@ class BookingRepository:
         )
         return list(result.scalars().all())
     
+    async def get_all_by_user(self, user_id: int) -> list[Booking]:
+        """Get all bookings for user, ordered by date descending"""
+        result = await self.session.execute(
+            select(Booking)
+            .where(Booking.user_id == user_id)
+            .order_by(Booking.booking_datetime.desc())
+        )
+        return list(result.scalars().all())
+    
     async def create(
         self,
         bukza_booking_id: str,
