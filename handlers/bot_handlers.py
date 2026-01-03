@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from database import async_session_maker
@@ -26,9 +26,12 @@ class MessageStates(StatesGroup):
 
 def get_main_menu_keyboard():
     """Get main menu keyboard with beautiful layout"""
+    # Web App button for booking
+    booking_url = "https://1emesto.ru/"
+    
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="🎯 Записаться"), KeyboardButton(text="📅 Мои записи")],
+            [KeyboardButton(text="🎯 Записаться", web_app=WebAppInfo(url=booking_url)), KeyboardButton(text="📅 Мои записи")],
             [KeyboardButton(text="📍 Адрес"), KeyboardButton(text="📞 Контакты")],
             [KeyboardButton(text="💬 Написать нам"), KeyboardButton(text="ℹ️ Помощь")]
         ],
@@ -41,17 +44,30 @@ def get_main_menu_keyboard():
 @router.message(Command("start"))
 async def cmd_start(message: Message, state: FSMContext):
     """Handle /start command"""
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+    from config import settings
+    
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
         user = await user_repo.get_by_telegram_id(message.from_user.id)
         
         if user and user.phone_number:
-            # User already registered - show menu
+            # User already registered - show menu with Web App button
+            booking_url = "https://1emesto.ru/"
+            
+            inline_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🎯 Записаться онлайн", web_app=WebAppInfo(url=booking_url))]
+            ])
+            
             await message.answer(
                 "🎯 Добро пожаловать в «Первое место»!\n\n"
                 "Развлекательный центр в ТКЦ ULTRA, Уфа\n\n"
-                "Выберите действие в меню ниже:",
+                "Нажмите кнопку ниже для онлайн-записи или выберите действие в меню:",
                 reply_markup=get_main_menu_keyboard()
+            )
+            await message.answer(
+                "👇 Быстрая запись:",
+                reply_markup=inline_keyboard
             )
         else:
             # New user - request phone number
@@ -129,12 +145,6 @@ async def button_address(message: Message):
 async def button_contacts(message: Message):
     """Handle 'Контакты' button"""
     await cmd_contacts(message)
-
-
-@router.message(F.text == "🎯 Записаться")
-async def button_book(message: Message):
-    """Handle 'Записаться' button"""
-    await cmd_book(message)
 
 
 @router.message(FeedbackStates.waiting_for_rating)

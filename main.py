@@ -8,6 +8,7 @@ from database import init_db
 from handlers.bot_handlers import router as bot_router
 from handlers.webhook_handlers import handle_webhook, handle_telegram_webhook
 from services.scheduler import start_scheduler, stop_scheduler
+from bot_setup import setup_bot
 
 # Configure logging
 logging.basicConfig(
@@ -29,8 +30,11 @@ async def on_startup(app: web.Application):
     start_scheduler()
     logger.info("Scheduler started")
     
-    # Set webhook for Telegram
+    # Setup bot (commands, description, etc.)
     bot = app['bot']
+    await setup_bot(bot)
+    
+    # Set webhook for Telegram
     telegram_webhook_url = f"{settings.webhook_host}/webhook/telegram"
     await bot.set_webhook(telegram_webhook_url, drop_pending_updates=True)
     logger.info(f"Telegram webhook set to: {telegram_webhook_url}")

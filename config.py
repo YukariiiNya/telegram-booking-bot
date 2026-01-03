@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     company_website: Optional[str] = "example.com"
     company_instagram: Optional[str] = "@example"
     company_hours: Optional[str] = "Пн-Вс: 10:00 - 22:00"
-    bukza_booking_url: Optional[str] = None
+    bukza_booking_url: Optional[str] = "https://1emesto.ru/#BukzaContainer24018"
     
     @field_validator('database_url')
     @classmethod

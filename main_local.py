@@ -6,6 +6,7 @@ from config import settings
 from database import init_db
 from handlers.bot_handlers import router as bot_router
 from services.scheduler import start_scheduler, stop_scheduler
+from bot_setup import setup_bot
 
 # Configure logging
 logging.basicConfig(
@@ -34,6 +35,9 @@ async def main():
     
     # Register handlers
     dp.include_router(bot_router)
+    
+    # Setup bot (commands, description, etc.)
+    await setup_bot(bot)
     
     logger.info("Bot started! Press Ctrl+C to stop.")
     
