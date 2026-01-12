@@ -39,9 +39,11 @@ class Booking(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     bukza_booking_id: Mapped[str] = mapped_column(String(100), unique=True, index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
     
     service_name: Mapped[str] = mapped_column(String(255))
+    client_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    client_phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     booking_datetime: Mapped[datetime] = mapped_column(DateTime)
     duration_minutes: Mapped[int] = mapped_column(Integer)
     status: Mapped[BookingStatus] = mapped_column(SQLEnum(BookingStatus), default=BookingStatus.ACTIVE)

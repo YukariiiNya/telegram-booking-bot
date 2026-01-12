@@ -68,15 +68,19 @@ class BookingRepository:
     async def create(
         self,
         bukza_booking_id: str,
-        user_id: int,
         service_name: str,
         booking_datetime: datetime,
-        duration_minutes: int
+        duration_minutes: int,
+        user_id: Optional[int] = None,
+        client_name: Optional[str] = None,
+        client_phone: Optional[str] = None
     ) -> Booking:
         booking = Booking(
             bukza_booking_id=bukza_booking_id,
             user_id=user_id,
             service_name=service_name,
+            client_name=client_name,
+            client_phone=client_phone,
             booking_datetime=booking_datetime,
             duration_minutes=duration_minutes
         )
@@ -84,6 +88,24 @@ class BookingRepository:
         await self.session.commit()
         await self.session.refresh(booking)
         return booking
+    
+    async def link_to_user(self, booking_id: int, user_id: int) -> bool:
+        """Link booking to user"""
+        await self.session.execute(
+            update(Booking).where(Booking.id == booking_id).values(user_id=user_id)
+        )
+        await self.session.commit()
+        return True
+    
+    async def get_unlinked_by_code(self, bukza_booking_id: str) -> Optional[Booking]:
+        """Get booking by code that is not linked to any user"""
+        result = await self.session.execute(
+            select(Booking).where(
+                Booking.bukza_booking_id == bukza_booking_id,
+                Booking.user_id == None
+            )
+        )
+        return result.scalar_one_or_none()
     
     async def update_status(self, booking_id: int, status: BookingStatus):
         await self.session.execute(

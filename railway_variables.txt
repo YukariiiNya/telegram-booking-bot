@@ -11,4 +11,4 @@ COMPANY_EMAIL=info@firstplace-ufa.ru
 COMPANY_WEBSITE=firstplace-ufa.ru
 COMPANY_INSTAGRAM=@firstplace_ufa
 COMPANY_HOURS=Ежедневно: 10:00 - 22:00
-BUKZA_BOOKING_URL=https://firstplace-ufa.ru/booking
+BUKZA_BOOKING_URL=https://1emesto.ru/#BukzaContainer24018
