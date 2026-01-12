@@ -453,7 +453,8 @@ async def cmd_address(message: Message):
     
     await message.answer(
         f"📍 Наш адрес:\n\n"
-        f"{address_text}\n\n"
+        f"{address_text}\n"
+        f"2 этаж\n\n"
         f"🕐 Режим работы:\n"
         f"{settings.company_hours}\n\n"
         f"🗺 Мы на картах:\n"

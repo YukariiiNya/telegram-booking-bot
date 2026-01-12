@@ -60,7 +60,7 @@ async def send_reminder(booking_id: int, bot: Bot):
                 f"🕐 {booking.booking_datetime.strftime('%H:%M')}\n"
                 f"━━━━━━━━━━━━━━━━━━━━\n\n"
                 f"📍 ТКЦ ULTRA, Бакалинская 27\n"
-                f"3 этаж, вход со стороны парковки\n\n"
+                f"2 этаж, вход со стороны парковки\n\n"
                 f"Ждём вас! 🎮",
                 reply_markup=keyboard
             )
@@ -257,7 +257,7 @@ async def handle_webhook(request: web.Request) -> web.Response:
                             f"━━━━━━━━━━━━━━━━━━━━\n\n"
                             f"📍 Как нас найти:\n"
                             f"ТКЦ ULTRA, ул. Бакалинская 27\n"
-                            f"3 этаж, вход со стороны парковки\n\n"
+                            f"2 этаж, вход со стороны парковки\n\n"
                             f"🔔 Напомним за 1 час до визита!\n\n"
                             f"До встречи! 🎮",
                             reply_markup=cancel_keyboard
