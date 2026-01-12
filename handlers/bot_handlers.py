@@ -474,9 +474,9 @@ async def cmd_contacts(message: Message):
     await message.answer(
         f"📞 Контакты:\n\n"
         f"☎️ Телефон: {settings.company_phone}\n"
-        f"📧 Email: {settings.company_email}\n"
         f"🌐 Сайт: {settings.company_website}\n"
-        f"📱 Instagram: {settings.company_instagram}\n\n"
+        f"📱 Instagram: https://www.instagram.com/firstvr.ufa\n"
+        f"📱 ВКонтакте: https://vk.ru/id734925222\n\n"
         f"💬 Или напишите нам прямо здесь через кнопку\n"
         f"«Написать нам» - мы ответим в течение часа!\n\n"
         f"Ждём вас в «Первое место»! 🎯",
